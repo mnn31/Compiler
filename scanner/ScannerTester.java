@@ -50,17 +50,17 @@ public class ScannerTester
             FileInputStream inStream = new FileInputStream(file);
             Scanner scanner = new Scanner(inStream);
             
-            boolean gotEOF = false;
-            while (!gotEOF)
+            boolean reachedEof = false;
+            while (!reachedEof)
             {
                 try
                 {
                     String token = scanner.nextToken();
                     System.out.println(token);
-                    
+
                     if (token.equals("EOF"))
                     {
-                        gotEOF = true;
+                        reachedEof = true;
                     }
                 }
                 catch (ScanErrorException e)

@@ -112,6 +112,8 @@ public class Parser
      * @precondition the current token is an integer literal
      * @postcondition that literal token is consumed and the current token advances
      * @return AST number node
+     * @throws IllegalArgumentException if the current token is not a valid integer
+     * @throws ScanErrorException if the scanner cannot advance to the next token
      */
     private Expression parseNumber() throws IllegalArgumentException, ScanErrorException
     {
@@ -126,6 +128,8 @@ public class Parser
      * @precondition the current token begins a factor
      * @postcondition the entire factor is consumed from the token stream
      * @return factor expression AST
+     * @throws IllegalArgumentException if the token stream does not match a factor
+     * @throws ScanErrorException if the scanner cannot advance to the next token
      */
     private Expression parseFactor() throws IllegalArgumentException, ScanErrorException
     {
@@ -156,6 +160,8 @@ public class Parser
      * @precondition the current token begins a term (a factor)
      * @postcondition the entire term is consumed from the token stream
      * @return term expression AST
+     * @throws IllegalArgumentException if the token stream does not match a term
+     * @throws ScanErrorException if the scanner cannot advance to the next token
      */
     private Expression parseTerm() throws IllegalArgumentException, ScanErrorException
     {
@@ -163,14 +169,7 @@ public class Parser
         while (curToken.equals("*") || curToken.equals("/") || curToken.equals("mod"))
         {
             String op = curToken;
-            if (curToken.equals("mod"))
-            {
-                eat("mod");
-            }
-            else
-            {
-                eat(curToken);
-            }
+            eat(op);
             value = new BinOp(op, value, parseFactor());
         }
         return value;
@@ -182,6 +181,8 @@ public class Parser
      * @precondition the current token begins an expression (a term)
      * @postcondition the entire expression is consumed from the token stream
      * @return expression AST
+     * @throws IllegalArgumentException if the token stream does not match an expression
+     * @throws ScanErrorException if the scanner cannot advance to the next token
      */
     public Expression parseExpr() throws IllegalArgumentException, ScanErrorException
     {
@@ -201,6 +202,8 @@ public class Parser
      * @precondition the current token begins the left-hand expression
      * @postcondition the condition (two expressions and a relop) is consumed
      * @return condition AST
+     * @throws IllegalArgumentException if a relational operator is not found
+     * @throws ScanErrorException if the scanner cannot advance to the next token
      */
     public Condition parseCondition() throws IllegalArgumentException, ScanErrorException
     {
@@ -222,6 +225,8 @@ public class Parser
      * @postcondition one complete statement and its terminating semicolon (if required) are
      *                consumed
      * @return statement AST
+     * @throws IllegalArgumentException if the token stream does not match a statement
+     * @throws ScanErrorException if the scanner cannot advance to the next token
      */
     public Statement parseStatement() throws IllegalArgumentException, ScanErrorException
     {

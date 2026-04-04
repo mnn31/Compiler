@@ -52,9 +52,9 @@ public class For extends Statement
             {
                 body.exec(env);
             }
-            catch (ContinueException e)
+            catch (ContinueException expected)
             {
-                // next i
+                // continue to next iteration
             }
             catch (BreakException e)
             {

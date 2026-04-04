@@ -1,0 +1,27 @@
+// Test 5: IF / IF-ELSE statements
+// Expected output:
+//   10   (x > y, so WRITELN(x))
+//   10   (y not > x, so ELSE branch: WRITELN(x))
+//   7    (x > y, so z := x - y = 7)
+BEGIN
+    x := 10;
+    y := 3;
+    IF x > y THEN
+        WRITELN(x);
+    IF y > x THEN
+        WRITELN(y);
+    ELSE
+        WRITELN(x);
+    z := 0;
+    IF x > y THEN
+    BEGIN
+        z := x - y;
+        WRITELN(z);
+    END;
+    ELSE
+    BEGIN
+        z := y - x;
+        WRITELN(z);
+    END;
+END;
+.

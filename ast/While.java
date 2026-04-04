@@ -43,9 +43,9 @@ public class While extends Statement
             {
                 body.exec(env);
             }
-            catch (ContinueException e)
+            catch (ContinueException expected)
             {
-                // next iteration of the loop HERE!!!
+                // continue to next iteration
             }
             catch (BreakException e)
             {

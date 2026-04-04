@@ -174,11 +174,6 @@ public class Scanner
             currentChar = (char) -1;
             System.exit(1);
         }
-        finally
-        {
-
-        }
-        
     }
     
     /**

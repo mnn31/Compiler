@@ -14,10 +14,25 @@ import scanner.*;
  * and executed in a fresh Environment. Programs are statement lists terminated by a period
  * or EOF.
  *
- * <p>The default suite builds Statement and Expression trees and runs them with exec and eval.
- * The peer review sheet uses parserTest6 as the main checkoff; it runs after parserTest0
- * through parserTest4. Tests that use READLN get scripted standard input from this class so
- * the full default run works without piping; see prepareStdinForPath.
+ * <p>The default suite covers all parser test files: parserTest0 through parserTest6_5,
+ * plus the mod, repeat/break/continue, and IF/ELSE tests. Tests that use READLN get
+ * scripted standard input from prepareStdinForPath so the full default run works without
+ * manual piping.
+ *
+ * <p>Expected outputs per file:
+ * <ul>
+ *   <li>parserTest0: 3</li>
+ *   <li>parserTest1: 4, 9, 1</li>
+ *   <li>parserTest2: 14, 10, 20</li>
+ *   <li>parserTest3: 1, 2, 3</li>
+ *   <li>parserTest4: 15</li>
+ *   <li>parserTest5: 10, 10, 7</li>
+ *   <li>parserTest6: 15, 5, 3, 0..9</li>
+ *   <li>parserTestMod: 1</li>
+ *   <li>parserTest4.5ForLoopReadln (input=42): 84, 42..97, 98..84</li>
+ *   <li>parserTest6_5 (input=5): 66, 11, 6, 0..9, 1, 3, 6</li>
+ *   <li>parserTestRepeatBreakContinue: 1, 1, 2, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55</li>
+ * </ul>
  *
  * @author Manan Gupta
  * @version 2026-25-03
@@ -27,8 +42,9 @@ public class ParserTester
     private static final InputStream ORIGINAL_SYSTEM_IN = System.in;
 
     /**
-     * Default test files when no command-line args are given: parserTest0 through parserTest4,
-     * then parserTest6 (peer review), then parserTest4.5ForLoopReadln and parserTest6_5.
+     * All test files run by default when no command-line args are given.
+     * Order: basic expression tests, assignment, IF/ELSE, WHILE/FOR, mod,
+     * READLN-based tests, and finally the REPEAT/BREAK/CONTINUE test.
      */
     private static final String[] DEFAULT_FILES = {
         "parser/parserTest0.txt",
@@ -36,14 +52,17 @@ public class ParserTester
         "parser/parserTest2.txt",
         "parser/parserTest3.txt",
         "parser/parserTest4.txt",
+        "parser/parserTest5.txt",
         "parser/parserTest6.txt",
+        "parser/parserTestMod.txt",
         "parser/parserTest4.5ForLoopReadln.txt",
-        "parser/parserTest6_5.txt"
+        "parser/parserTest6_5.txt",
+        "parser/parserTestRepeatBreakContinue.txt"
     };
 
     /**
-     * Redirects standard input for known READLN test files so each program gets one integer
-     * without manual piping. Other paths leave stdin unchanged.
+     * Redirects standard input for known READLN test files so each program gets scripted
+     * integers without manual piping. Other paths leave stdin unchanged.
      *
      * @param path path to the source file (may contain directory segments)
      * @precondition path is non-null
@@ -69,18 +88,16 @@ public class ParserTester
     }
 
     /**
-     * Parses a single file: builds a scanner from the file input stream, creates a Parser
-     * instance, and parses all statements until EOF. The scanner returns "EOF" when a
-     * period is encountered or the stream ends (hasNext() returns false).
+     * Parses and runs a single source file: builds a scanner, creates a Parser, and
+     * executes all statements until EOF. Restores stdin afterwards.
      *
-     * @param path Path to the source file to parse.
-     * @precondition path refers to a readable source file when execution begins
-     * @postcondition the file is parsed and run; standard input is restored to the original
-     *                stream
-     * @throws FileNotFoundException If the file cannot be opened.
-     * @throws IOException If reading or closing the file fails.
-     * @throws ScanErrorException If the scanner encounters an invalid character.
-     * @throws IllegalArgumentException If the token stream is invalid for the grammar.
+     * @param path path to the source file to parse and run
+     * @precondition path refers to a readable source file
+     * @postcondition the file is parsed and executed; stdin is restored to the original stream
+     * @throws FileNotFoundException if the file cannot be opened
+     * @throws IOException if reading or closing the file fails
+     * @throws ScanErrorException if the scanner encounters an invalid character
+     * @throws IllegalArgumentException if the token stream is invalid for the grammar
      */
     private static void parseFile(String path) throws FileNotFoundException, IOException,
             ScanErrorException, IllegalArgumentException
@@ -101,14 +118,13 @@ public class ParserTester
     }
 
     /**
-     * Entry point for the parser tester. Runs the parser on one or more source files.
-     * If args are provided, each is used as a file path; otherwise the default suite runs
-     * (parserTest0–4, parserTest6, then READLN tests). For each file, parses all statements
-     * until EOF and prints success or error.
+     * Entry point. Runs the parser on one or more source files.
+     * If args are provided each is used as a file path; otherwise the full default suite
+     * runs (parserTest0 through parserTestRepeatBreakContinue).
      *
-     * @param args optional file paths to parse; if empty, the default suite listed above is used
+     * @param args optional file paths to parse; if empty the default suite is used
      * @precondition none
-     * @postcondition each requested file has been parsed or a clear error was printed
+     * @postcondition each requested file has been parsed and run, or a clear error was printed
      */
     public static void main(String[] args)
     {

@@ -43,9 +43,9 @@ public class RepeatUntil extends Statement
             {
                 body.exec(env);
             }
-            catch (ContinueException e)
+            catch (ContinueException expected)
             {
-                // continue repeat loop
+                // continue to next iteration
             }
             catch (BreakException e)
             {
