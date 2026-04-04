@@ -1,0 +1,11 @@
+# Compiled Java classes
+*.class
+
+# macOS
+.DS_Store
+
+# BlueJ
+*.ctxt
+
+# Build output
+out/

@@ -1,0 +1,22 @@
+// Sample from lab "If You Finish Early" (BREAK / CONTINUE / REPEAT UNTIL)
+BEGIN
+    i := 0;
+    WHILE 1 + 1 = 2 DO
+    BEGIN
+        i := i + 1;
+        IF i = 3 THEN BREAK;
+        WRITELN(i);
+        IF i = 2 THEN CONTINUE;
+        WRITELN(i);
+    END;
+    i := 1;
+    sum := 0;
+    REPEAT
+    BEGIN
+        sum := sum + i;
+        WRITELN(sum);
+        i := i + 1;
+    END;
+    UNTIL i > 10;
+END;
+.

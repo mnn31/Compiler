@@ -1,0 +1,32 @@
+// Readln and  for test file
+// @author Chiling Han
+BEGIN
+	READLN(x);
+	y := x + 1;
+	x := x + y;
+	WRITELN(x * y);
+	IF x > y THEN 
+	BEGIN
+		WRITELN(x);
+		WRITELN(y);
+	END;
+	ELSE
+	BEGIN
+		WRITELN(x);
+	END;
+	x := 0;
+	WHILE x < 10 DO
+	BEGIN
+		WRITELN(x);
+		x := x + 1;
+	END;
+
+	sum := 0;
+	FOR i := 1 TO 3 DO
+	BEGIN
+		sum := sum + i;
+		WRITELN(sum);
+	END;
+	
+END;
+.
