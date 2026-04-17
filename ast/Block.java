@@ -4,7 +4,8 @@ import java.util.List;
 import environment.Environment;
 
 /**
- * Statement that runs a sequence of child statements in order, as in BEGIN ... END.
+ * A BEGIN...END block. Just runs a list of statements in order.
+ * Also used as the top-level container for a whole program.
  *
  * @author Manan Gupta
  * @version 2026-03-25
@@ -14,11 +15,10 @@ public class Block extends Statement
     private final List<Statement> statements;
 
     /**
-     * Constructs a block containing the given statements in execution order.
+     * Wraps a list of statements into a block.
      *
-     * @param statements the list of statements to run sequentially
-     * @precondition statements is non-null
-     * @postcondition this block holds that list in order
+     * @param statements ordered list of statements to execute
+     * @precondition statements != null (can be empty though)
      */
     public Block(List<Statement> statements)
     {
@@ -26,12 +26,11 @@ public class Block extends Statement
     }
 
     /**
-     * Runs each child statement in list order.
+     * Executes each statement in order. If one throws a BreakException or
+     * ContinueException, it propagates up to the nearest enclosing loop.
      *
-     * @param env the runtime environment shared by all child statements
-     * @precondition env is non-null
-     * @postcondition each child has been executed in sequence unless one escapes with an
-     *                exception
+     * @param env shared environment for all statements in this block
+     * @precondition env != null
      */
     @Override
     public void exec(Environment env)

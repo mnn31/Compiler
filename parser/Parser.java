@@ -128,7 +128,8 @@ public class Parser
     }
 
     /**
-     * Parses a factor -- one of: (expr), -factor, variable name, or number.
+     * Parses a factor -- one of: (expr), -factor, id(args) procedure call,
+     * variable name, or number.
      *
      * @precondition curToken starts a valid factor
      * @postcondition all tokens making up the factor are consumed
@@ -490,13 +491,21 @@ public class Parser
                 "parser/parserTest2.txt",
                 "parser/parserTest3.txt",
                 "parser/parserTest4.txt",
+                "parser/parserTest5.txt",
                 "parser/parserTest6.txt",
+                "parser/parserTestMod.txt",
                 "parser/parserTest4.5ForLoopReadln.txt",
                 "parser/parserTest6_5.txt",
+                "parser/parserTestRepeatBreakContinue.txt",
                 "parser/parserTestProcedures.txt",
                 "parser/parserTestProcedures2.txt",
                 "parser/parserTestProcedures3.txt",
-                "parser/parserTestProcedures4.txt"
+                "parser/parserTestProcedures4.txt",
+                "parser/parserTestProcedures5.txt",
+                "parser/parserTestProcedures6.txt",
+                "parser/parserTestProcedures7.txt",
+                "parser/parserTestProcedures8.txt",
+                "parser/parserTestProcedures9.txt"
             };
         }
         for (String path : files)

@@ -3,7 +3,8 @@ package ast;
 import environment.Environment;
 
 /**
- * Abstract syntax tree node for a statement that may update the environment or perform I/O.
+ * Base class for all statement nodes in the AST. Each subclass knows how to
+ * execute itself given an environment.
  *
  * @author Manan Gupta
  * @version 2026-03-25
@@ -11,12 +12,10 @@ import environment.Environment;
 public abstract class Statement
 {
     /**
-     * Executes this statement, possibly modifying the environment or printing output.
+     * Runs this statement in the given environment.
      *
-     * @param env the runtime environment for variables and side effects
-     * @precondition env is non-null; any variables read are defined when required
-     * @postcondition semantics are applied to env, or LoopControlException is used for
-     *                break/continue control flow
+     * @param env the environment holding all current variable values
+     * @precondition env != null
      */
     public abstract void exec(Environment env);
 }

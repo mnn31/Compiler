@@ -29,7 +29,8 @@ import java.io.*;
  *    letter or digit following it; 
  *    because if there is, then it would be a variable name.
  * 2. What if the next character had been a newline?
- *    If the next character was a newline, we would skip over the newline (since its like a whitespace)
+ *    If the next character was a newline, we would skip over 
+ *    the newline (since its like a whitespace)
  *    because there is no letter or digit following it.
  * 3. What if the next character had been an open parentheses?
  *    If the next character was an open parentheses, we would conclude that 'I' and 

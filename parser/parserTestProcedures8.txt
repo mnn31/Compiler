@@ -1,0 +1,21 @@
+// Multiple procedures calling each other with return values
+// Tests nested calls: isEven calls isOdd and vice versa (mutual recursion)
+// Expected output: 1 0 1 0 1 (isEven for 0,1,2,3,4)
+PROCEDURE isEven(n);
+BEGIN
+   IF n = 0 THEN isEven := 1
+   ELSE isEven := isOdd(n - 1);
+END;
+PROCEDURE isOdd(n);
+BEGIN
+   IF n = 0 THEN isOdd := 0
+   ELSE isOdd := isEven(n - 1);
+END;
+BEGIN
+   WRITELN(isEven(0));
+   WRITELN(isEven(1));
+   WRITELN(isEven(2));
+   WRITELN(isEven(3));
+   WRITELN(isEven(4));
+END;
+.

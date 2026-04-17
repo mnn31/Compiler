@@ -3,7 +3,7 @@ package ast;
 import environment.Environment;
 
 /**
- * AST node representing an integer literal in the source program.
+ * A number literal node -- just wraps a single int. Simplest AST node there is.
  *
  * @author Manan Gupta
  * @version 2026-03-25
@@ -13,11 +13,9 @@ public class Number extends Expression
     private final int value;
 
     /**
-     * Constructs a literal expression with the given value.
+     * Stores the given integer constant.
      *
-     * @param value the integer value of this literal
-     * @precondition none
-     * @postcondition this literal stores the given value
+     * @param value the literal integer value
      */
     public Number(int value)
     {
@@ -25,12 +23,10 @@ public class Number extends Expression
     }
 
     /**
-     * Returns this literal integer value; env is not used.
+     * Returns the stored value. env is ignored since there's nothing to look up.
      *
-     * @param env the runtime environment (unused for literals)
-     * @return this node literal value
-     * @precondition env may be any value; it is ignored
-     * @postcondition returns the stored literal value
+     * @param env not used
+     * @return the integer constant
      */
     @Override
     public int eval(Environment env)

@@ -3,7 +3,8 @@ package ast;
 import environment.Environment;
 
 /**
- * Loop that re-evaluates the condition before each iteration and supports break and continue.
+ * WHILE loop -- checks condition before each iteration.
+ * BREAK exits immediately, CONTINUE skips to the next check.
  *
  * @author Manan Gupta
  * @version 2026-03-25
@@ -14,12 +15,11 @@ public class While extends Statement
     private final Statement body;
 
     /**
-     * Constructs a WHILE loop with the given guard and body.
+     * Creates a while loop node.
      *
-     * @param cond the condition tested before each iteration
-     * @param body the statement executed for each iteration while the condition holds
-     * @precondition cond and body are non-null
-     * @postcondition this node stores the guard and body
+     * @param cond the loop guard -- checked before every iteration
+     * @param body what to run each time through
+     * @precondition cond != null, body != null
      */
     public While(Condition cond, Statement body)
     {
@@ -28,11 +28,11 @@ public class While extends Statement
     }
 
     /**
-     * Repeats the body while the condition is true.
+     * Runs body in a loop until cond is false or a BREAK is hit.
+     * ContinueException just skips to re-checking the condition.
      *
-     * @param env the runtime environment for the condition and body
-     * @precondition env is non-null; condition and body can run in env
-     * @postcondition loop exits when the condition is false or on break
+     * @param env environment for condition checks and body execution
+     * @precondition env != null
      */
     @Override
     public void exec(Environment env)

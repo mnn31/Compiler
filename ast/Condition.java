@@ -3,7 +3,8 @@ package ast;
 import environment.Environment;
 
 /**
- * Boolean condition formed by comparing two integer expressions with a relational operator.
+ * Represents a boolean condition like "x > 5" or "a <> b".
+ * Used by IF, WHILE, and REPEAT-UNTIL. Supports all 6 relational operators.
  *
  * @author Manan Gupta
  * @version 2026-03-25
@@ -15,13 +16,12 @@ public class Condition
     private final Expression right;
 
     /**
-     * Constructs a condition comparing two expressions.
+     * Creates a condition node.
      *
-     * @param left  the left-hand side expression
-     * @param relop one of =, <>, <, >, <=, or >=
-     * @param right the right-hand side expression
-     * @precondition left and right are non-null; relop is a supported operator string
-     * @postcondition this condition holds the given operands and operator
+     * @param left  left side of the comparison
+     * @param relop the relational operator (=, <>, <, >, <=, >=)
+     * @param right right side of the comparison
+     * @precondition all three params are non-null; relop is one of the 6 valid operators
      */
     public Condition(Expression left, String relop, Expression right)
     {
@@ -31,46 +31,44 @@ public class Condition
     }
 
     /**
-     * Evaluates both sides and tests the relation.
+     * Evaluates both sides and compares them with relop.
      *
-     * @param env the runtime environment for evaluating subexpressions
-     * @return true if the relation holds between the evaluated values
-     * @precondition env is non-null; subexpressions can be evaluated in env
-     * @postcondition returns whether the relation holds; does not change env bindings
-     * @throws IllegalStateException if the relational operator is not recognized
+     * @param env the environment for evaluating left and right
+     * @return true if the condition holds, false otherwise
+     * @throws IllegalStateException if somehow relop isn't one of the six valid operators
      */
     public boolean eval(Environment env)
     {
-        int l = left.eval(env);
-        int r = right.eval(env);
+        int ll = left.eval(env);
+        int rr = right.eval(env);
         boolean result;
         if (relop.equals("="))
         {
-            result = l == r;
+            result = ll == rr;
         }
         else if (relop.equals("<>"))
         {
-            result = l != r;
+            result = ll != rr;
         }
         else if (relop.equals("<"))
         {
-            result = l < r;
+            result = ll < rr;
         }
         else if (relop.equals(">"))
         {
-            result = l > r;
+            result = ll > rr;
         }
         else if (relop.equals("<="))
         {
-            result = l <= r;
+            result = ll <= rr;
         }
         else if (relop.equals(">="))
         {
-            result = l >= r;
+            result = ll >= rr;
         }
         else
         {
-            throw new IllegalStateException("Unknown relop: " + relop);
+            throw new IllegalStateException("unrecognized relop '" + relop + "' -- parser bug?");
         }
         return result;
     }

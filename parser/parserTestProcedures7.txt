@@ -1,0 +1,16 @@
+// Procedures mixed with loops: loop calling a procedure, procedure using return values
+// Expected output: 1 4 9 16 25 (squares of 1..5) then 55 (sum of squares)
+PROCEDURE square(n);
+square := n * n;
+PROCEDURE addTo(val);
+sum := sum + val;
+BEGIN
+   sum := 0;
+   FOR i := 1 TO 5 DO
+   BEGIN
+      WRITELN(square(i));
+      ignore := addTo(square(i));
+   END;
+   WRITELN(sum);
+END;
+.

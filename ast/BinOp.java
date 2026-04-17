@@ -3,7 +3,7 @@ package ast;
 import environment.Environment;
 
 /**
- * AST node for a binary arithmetic operator on two subexpressions.
+ * Binary arithmetic operation (+, -, *, /, mod) on two sub-expressions.
  *
  * @author Manan Gupta
  * @version 2026-03-25
@@ -15,13 +15,12 @@ public class BinOp extends Expression
     private final Expression right;
 
     /**
-     * Constructs a binary operation with the given operator and operands.
+     * Builds a BinOp node.
      *
-     * @param op    one of +, -, *, /, or mod
-     * @param left  the left operand expression
-     * @param right the right operand expression
-     * @precondition op, left, and right are non-null
-     * @postcondition this node holds the given operator and operands
+     * @param op    the operator string -- should be +, -, *, /, or mod
+     * @param left  left-hand side
+     * @param right right-hand side
+     * @precondition none of the arguments are null
      */
     public BinOp(String op, Expression left, Expression right)
     {
@@ -31,38 +30,39 @@ public class BinOp extends Expression
     }
 
     /**
-     * Evaluates both operands and applies the arithmetic or mod operator.
+     * Evaluates left and right, then applies op.
+     * Note: integer division truncates (Java default behavior).
      *
-     * @param env the runtime environment passed to subexpressions
-     * @return the integer result of applying this operator to the operand values
-     * @precondition env is non-null; operands evaluate in env
-     * @postcondition returns the combined value per this operator
+     * @param env passed down to both sub-expressions
+     * @return result of applying op to the two evaluated operands
+     * @precondition env != null
+     * @postcondition env is unchanged
      */
     @Override
     public int eval(Environment env)
     {
-        int l = left.eval(env);
-        int r = right.eval(env);
+        int ll = left.eval(env);
+        int rr = right.eval(env);
         if (op.equals("+"))
         {
-            return l + r;
+            return ll + rr;
         }
         if (op.equals("-"))
         {
-            return l - r;
+            return ll - rr;
         }
         if (op.equals("*"))
         {
-            return l * r;
+            return ll * rr;
         }
         if (op.equals("/"))
         {
-            return l / r;
+            return ll / rr;
         }
         if (op.equals("mod"))
         {
-            return l % r;
+            return ll % rr;
         }
-        throw new IllegalStateException("Unknown op: " + op);
+        throw new IllegalStateException("how did we get here? unknown op: " + op);
     }
 }

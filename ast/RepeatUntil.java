@@ -3,7 +3,8 @@ package ast;
 import environment.Environment;
 
 /**
- * EXTRA! Post-test loop: runs the body at least once, then repeats until the condition becomes true.
+ * REPEAT...UNTIL loop (extra credit). Like a do-while -- body always runs at least once,
+ * and keeps going until the condition is true (opposite of WHILE).
  *
  * @author Manan Gupta
  * @version 2026-03-25
@@ -14,12 +15,11 @@ public class RepeatUntil extends Statement
     private final Condition cond;
 
     /**
-     * Constructs a REPEAT-UNTIL loop.
+     * Creates a REPEAT body UNTIL cond node.
      *
-     * @param body the statement run each iteration until termination
-     * @param cond the condition; the loop stops when this evaluates to true
-     * @precondition body and cond are non-null
-     * @postcondition this node stores the body and termination condition
+     * @param body the loop body -- runs at least once no matter what
+     * @param cond stop condition -- loop ends when this is true
+     * @precondition body != null, cond != null
      */
     public RepeatUntil(Statement body, Condition cond)
     {
@@ -28,11 +28,11 @@ public class RepeatUntil extends Statement
     }
 
     /**
-     * Runs the body at least once, then repeats until the condition becomes true.
+     * Runs body, checks cond, repeats if cond is still false.
+     * BREAK exits immediately, CONTINUE skips to the condition check.
      *
-     * @param env the runtime environment for the body and condition
-     * @precondition env is non-null
-     * @postcondition stops when cond is true or the body exits with break
+     * @param env the environment for body and condition
+     * @precondition env != null
      */
     @Override
     public void exec(Environment env)

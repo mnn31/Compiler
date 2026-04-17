@@ -1,0 +1,10 @@
+// Exercise 3 scoping test: should print 5 then 3 (not 5 twice)
+// Tests that procedure params don't clobber the caller's variables
+PROCEDURE print(n);
+WRITELN(n);
+BEGIN
+   n := 3;
+   ignore := print(5);
+   WRITELN(n);
+END;
+.

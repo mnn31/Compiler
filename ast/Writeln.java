@@ -3,7 +3,7 @@ package ast;
 import environment.Environment;
 
 /**
- * Statement that evaluates an expression and prints its value on a line to standard output.
+ * WRITELN statement -- evaluates the expression and prints it on its own line.
  *
  * @author Manan Gupta
  * @version 2026-03-25
@@ -13,11 +13,10 @@ public class Writeln extends Statement
     private final Expression exp;
 
     /**
-     * Constructs a WRITELN statement for the given expression.
+     * Creates a WRITELN node for the given expression.
      *
-     * @param exp the expression whose value is printed when executed
-     * @precondition exp is non-null
-     * @postcondition this node holds the expression to print
+     * @param exp expression to evaluate and print
+     * @precondition exp != null
      */
     public Writeln(Expression exp)
     {
@@ -25,11 +24,11 @@ public class Writeln extends Statement
     }
 
     /**
-     * Prints the value of the expression on its own line.
+     * Evaluates exp and prints the result with a newline.
      *
-     * @param env the runtime environment used to evaluate the expression
-     * @precondition env is non-null; the expression evaluates in env
-     * @postcondition one line of output is printed to standard output
+     * @param env environment to evaluate the expression in
+     * @precondition env != null
+     * @postcondition one integer line written to stdout
      */
     @Override
     public void exec(Environment env)

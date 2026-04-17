@@ -4,7 +4,9 @@ import java.util.Scanner;
 import environment.Environment;
 
 /**
- * Statement that reads one integer from standard input into a variable.
+ * READLN statement -- reads one integer from stdin and stores it in var.
+ * The static scanner is shared across all READLN nodes so we don't open
+ * multiple scanners on System.in (that caused bugs during testing).
  *
  * @author Manan Gupta
  * @version 2026-03-25
@@ -15,11 +17,10 @@ public class Readln extends Statement
     private static Scanner stdinScanner;
 
     /**
-     * Rebinds standard input for READLN. Call after standard input is redirected, for example
-     * from the parser test driver when supplying scripted input for tests.
+     * Resets the shared stdin scanner. Call this when System.in has been
+     * redirected (e.g. in ParserTester when injecting scripted input).
      *
-     * @precondition none
-     * @postcondition the static scanner reads from the current standard input stream
+     * @postcondition stdinScanner now reads from the current System.in
      */
     public static void resetStdinScanner()
     {
@@ -27,11 +28,10 @@ public class Readln extends Statement
     }
 
     /**
-     * Constructs a READLN for the named variable.
+     * Creates a READLN node that reads into the given variable.
      *
-     * @param var the variable that receives the next integer from stdin
-     * @precondition var is a non-null variable name
-     * @postcondition this statement targets that name for the next read
+     * @param var name of the variable to store the input in
+     * @precondition var != null
      */
     public Readln(String var)
     {
@@ -39,11 +39,12 @@ public class Readln extends Statement
     }
 
     /**
-     * Reads one integer from standard input and stores it under this statement variable name.
+     * Reads the next integer from stdin and assigns it to var in env.
+     * Lazily initializes the scanner if it hasn't been set up yet.
      *
-     * @param env the runtime environment where the read value is stored
-     * @precondition the bound stdin scanner has a next token that parses as an integer
-     * @postcondition the target variable is set in env to the integer read from stdin
+     * @param env environment to store the result in
+     * @precondition stdin has an integer available to read
+     * @postcondition env.getVariable(var) returns the integer that was read
      */
     @Override
     public void exec(Environment env)

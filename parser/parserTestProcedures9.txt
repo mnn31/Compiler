@@ -1,0 +1,11 @@
+// Zero-procedure program: make sure old programs still work after procedure changes
+// Expected output: 10 20 30
+BEGIN
+   x := 10;
+   WRITELN(x);
+   x := x + 10;
+   WRITELN(x);
+   x := x + 10;
+   WRITELN(x);
+END;
+.

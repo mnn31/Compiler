@@ -3,7 +3,7 @@ package ast;
 import environment.Environment;
 
 /**
- * AST node for a variable reference; evaluation looks up the name in the environment.
+ * A variable reference -- evaluates by looking up the name in the environment.
  *
  * @author Manan Gupta
  * @version 2026-03-25
@@ -13,11 +13,11 @@ public class Variable extends Expression
     private final String name;
 
     /**
-     * Constructs a reference to the named variable.
+     * Creates a variable node for the given identifier name.
      *
-     * @param name the identifier of the variable to read
-     * @precondition name is non-null
-     * @postcondition this node refers to that identifier
+     * @param name the variable's identifier
+     * @precondition name is non-null and is a valid identifier
+     * @postcondition this.name == name
      */
     public Variable(String name)
     {
@@ -25,12 +25,12 @@ public class Variable extends Expression
     }
 
     /**
-     * Looks up this variable name in the environment.
+     * Looks up name in env and returns its value.
+     * Will throw if the variable was never assigned.
      *
-     * @param env the runtime environment holding current variable values
-     * @return the value bound to this variable name
-     * @precondition env is non-null; the variable is defined in env
-     * @postcondition returns the stored value for this name
+     * @param env the environment to search
+     * @return current value of the variable
+     * @precondition the variable has been set before this is called
      */
     @Override
     public int eval(Environment env)

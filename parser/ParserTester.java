@@ -1,12 +1,12 @@
 package parser;
 
+import ast.Readln;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import ast.Readln;
 import scanner.*;
 
 /**
@@ -32,6 +32,15 @@ import scanner.*;
  *   <li>parserTest4.5ForLoopReadln (input=42): 84, 42..97, 98..84</li>
  *   <li>parserTest6_5 (input=5): 66, 11, 6, 0..9, 1, 3, 6</li>
  *   <li>parserTestRepeatBreakContinue: 1, 1, 2, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55</li>
+ *   <li>parserTestProcedures (Ex1 simple): 5</li>
+ *   <li>parserTestProcedures2 (Ex2 args): 1, 2, 3, 4, 5</li>
+ *   <li>parserTestProcedures3 (Ex3 scope): 5, 2</li>
+ *   <li>parserTestProcedures4 (Ex4 return): 5, 10</li>
+ *   <li>parserTestProcedures5 (scope no clobber): 5, 3</li>
+ *   <li>parserTestProcedures6 (factorial): 120, 1, 720</li>
+ *   <li>parserTestProcedures7 (loops + procs): 1, 4, 9, 16, 25, 55</li>
+ *   <li>parserTestProcedures8 (mutual recursion): 1, 0, 1, 0, 1</li>
+ *   <li>parserTestProcedures9 (zero procs regression): 10, 20, 30</li>
  * </ul>
  *
  * @author Manan Gupta
@@ -57,7 +66,16 @@ public class ParserTester
         "parser/parserTestMod.txt",
         "parser/parserTest4.5ForLoopReadln.txt",
         "parser/parserTest6_5.txt",
-        "parser/parserTestRepeatBreakContinue.txt"
+        "parser/parserTestRepeatBreakContinue.txt",
+        "parser/parserTestProcedures.txt",
+        "parser/parserTestProcedures2.txt",
+        "parser/parserTestProcedures3.txt",
+        "parser/parserTestProcedures4.txt",
+        "parser/parserTestProcedures5.txt",
+        "parser/parserTestProcedures6.txt",
+        "parser/parserTestProcedures7.txt",
+        "parser/parserTestProcedures8.txt",
+        "parser/parserTestProcedures9.txt"
     };
 
     /**

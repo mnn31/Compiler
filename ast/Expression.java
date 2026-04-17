@@ -3,7 +3,7 @@ package ast;
 import environment.Environment;
 
 /**
- * Abstract syntax tree node for an expression that evaluates to an integer value.
+ * Base class for expression nodes -- anything that evaluates to an int.
  *
  * @author Manan Gupta
  * @version 2026-03-25
@@ -11,12 +11,12 @@ import environment.Environment;
 public abstract class Expression
 {
     /**
-     * Evaluates this expression using variable values from the environment.
+     * Evaluates this expression and returns the result.
      *
-     * @param env the runtime environment holding variable bindings
-     * @precondition env is non-null; variables referenced by this expression are defined
-     * @postcondition the returned value equals this expression evaluated in env
-     * @return the integer result of evaluation
+     * @param env environment to look up variables in
+     * @return the integer value this expression evaluates to
+     * @precondition env != null, all referenced variables are defined
+     * @postcondition env is not modified
      */
     public abstract int eval(Environment env);
 }

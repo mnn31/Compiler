@@ -3,7 +3,8 @@ package ast;
 import environment.Environment;
 
 /**
- * EXTRA! Counted FOR loop with inclusive start and end values for the loop variable.
+ * FOR loop (extra credit). Counts var from start TO end inclusive and runs body each time.
+ * Supports BREAK and CONTINUE the same way WHILE does.
  *
  * @author Manan Gupta
  * @version 2026-03-25
@@ -16,14 +17,13 @@ public class For extends Statement
     private final Statement body;
 
     /**
-     * Constructs a FOR loop from start through end inclusive.
+     * Sets up a FOR var := start TO end DO body node.
      *
-     * @param var   the loop variable name, updated before each body execution
-     * @param start expression for the first value of the loop variable
-     * @param end   expression for the last value of the loop variable
-     * @param body  the statement executed once per value in the range
-     * @precondition var, start, end, and body are non-null
-     * @postcondition this node stores the loop parameters and body
+     * @param var   name of the loop variable
+     * @param start starting value (inclusive)
+     * @param end   ending value (inclusive)
+     * @param body  statement to execute each iteration
+     * @precondition none of the params are null
      */
     public For(String var, Expression start, Expression end, Statement body)
     {
@@ -34,11 +34,11 @@ public class For extends Statement
     }
 
     /**
-     * Iterates the loop variable from the start through end value inclusive and runs the body.
+     * Evaluates start and end once, then loops var from start to end.
+     * BREAK exits early, CONTINUE moves to the next value of var.
      *
-     * @param env the runtime environment holding the loop variable and other state
-     * @precondition env is non-null; bounds evaluate in env
-     * @postcondition loop variable runs from start through end unless break or continue applies
+     * @param env environment where var is set and body runs
+     * @precondition env != null
      */
     @Override
     public void exec(Environment env)

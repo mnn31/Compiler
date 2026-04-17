@@ -3,7 +3,7 @@ package ast;
 import environment.Environment;
 
 /**
- * Conditional statement with a required then-branch and an optional else-branch.
+ * IF statement, with an optional ELSE branch. elseStmt is null when there's no ELSE.
  *
  * @author Manan Gupta
  * @version 2026-03-25
@@ -15,13 +15,13 @@ public class If extends Statement
     private final Statement elseStmt;
 
     /**
-     * Constructs an IF statement with optional ELSE.
+     * Creates an IF (THEN) (ELSE) node. Pass null for elseStmt if there's no else.
      *
-     * @param cond      the boolean condition controlling which branch runs
-     * @param thenStmt  the statement executed when the condition is true
-     * @param elseStmt  the statement executed when false, or null if there is no ELSE branch
-     * @precondition cond and thenStmt are non-null
-     * @postcondition this node stores the condition and branches
+     * @param cond     the condition to test
+     * @param thenStmt statement to run when cond is true
+     * @param elseStmt statement to run when cond is false, or null
+     * @precondition cond != null, thenStmt != null
+     * @postcondition this node stores all three fields
      */
     public If(Condition cond, Statement thenStmt, Statement elseStmt)
     {
@@ -31,11 +31,10 @@ public class If extends Statement
     }
 
     /**
-     * Evaluates the condition and runs the then branch, or the else branch when present.
+     * Runs thenStmt if cond is true, elseStmt otherwise (if it exists).
      *
-     * @param env the runtime environment passed to the chosen branch
-     * @precondition env is non-null; the condition can be evaluated in env
-     * @postcondition exactly one branch runs (then, or else if present and condition false)
+     * @param env the environment for evaluating the condition and running branches
+     * @precondition env != null
      */
     @Override
     public void exec(Environment env)
