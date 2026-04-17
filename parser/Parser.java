@@ -8,9 +8,12 @@ import environment.Environment;
 import scanner.ScanErrorException;
 
 /**
- * Recursive-descent parser without backtracking. Builds an abstract syntax tree (AST)
- * for a PL/0-style language: expressions, assignments, WRITELN, BEGIN/END, IF/THEN/ELSE,
- * WHILE/DO, FOR/TO/DO, and READLN. Programs are sequences of statements terminated by a period.
+ * Recursive-descent parser that builds an AST instead of evaluating directly.
+ * Handles expressions, assignments, WRITELN/READLN, BEGIN/END blocks, IF/ELSE,
+ * WHILE, FOR, REPEAT/UNTIL, BREAK, and CONTINUE.
+ *
+ * <p>Each parseXXX method consumes tokens and returns the corresponding AST node.
+ * Actual execution happens later when exec/eval is called on the tree.
  *
  * @author Manan Gupta
  * @version 2026-25-03
@@ -21,12 +24,13 @@ public class Parser
     private String curToken;
 
     /**
-     * Constructs a parser that reads tokens from the given scanner.
+     * Creates a parser reading from the given scanner.
+     * Immediately loads the first token into curToken.
      *
-     * @param scan The scanner that supplies tokens from the source program.
-     * @precondition scan is open and will supply tokens for the program
-     * @postcondition the current token is the first token from the scanner
-     * @throws ScanErrorException If the scanner cannot read the first token.
+     * @param scan the scanner to read tokens from
+     * @precondition scan != null and is ready to produce tokens
+     * @postcondition curToken holds the first token of the input
+     * @throws ScanErrorException if the very first nextToken() call fails
      */
     public Parser(scanner.Scanner scan) throws ScanErrorException
     {
@@ -35,12 +39,12 @@ public class Parser
     }
 
     /**
-     * True if the token is a reserved keyword of the language.
+     * Returns true if token is a reserved keyword (so we don't treat it as an identifier).
      *
-     * @param token the token to test
-     * @return true if the token is a reserved word
-     * @precondition token is non-null
-     * @postcondition returns whether this token string is a reserved keyword
+     * @param token the token string to check
+     * @return true if token is a keyword, false otherwise
+     * @precondition token != null
+     * @postcondition token is unchanged; no side effects
      */
     private boolean isKeyword(String token)
     {
@@ -49,16 +53,17 @@ public class Parser
             || token.equals("ELSE") || token.equals("WHILE") || token.equals("DO")
             || token.equals("FOR") || token.equals("TO") || token.equals("READLN")
             || token.equals("REPEAT") || token.equals("UNTIL") || token.equals("BREAK")
-            || token.equals("CONTINUE");
+            || token.equals("CONTINUE") || token.equals("PROCEDURE");
     }
 
     /**
-     * True if token is a variable name (letter start), excluding reserved words.
+     * Returns true if token looks like a user-defined identifier
+     * (starts with a letter and isn't a keyword).
      *
-     * @param token token to test
-     * @return true if the token is an identifier
-     * @precondition token is non-null
-     * @postcondition returns whether the token is a non-keyword identifier
+     * @param token token to check
+     * @return true if it's a valid non-keyword identifier
+     * @precondition token != null
+     * @postcondition no side effects
      */
     private boolean isId(String token)
     {
@@ -70,12 +75,12 @@ public class Parser
     }
 
     /**
-     * True if the token is a relational operator.
+     * Checks if token is one of the six relational operators.
      *
-     * @param token the token to test
-     * @return true if the token is =, <>, or another comparison operator
-     * @precondition token is non-null
-     * @postcondition returns whether the token is a relational operator
+     * @param token token to check
+     * @return true if token is =, &lt;&gt;, &lt;, &gt;, &lt;=, or &gt;=
+     * @precondition token != null
+     * @postcondition no side effects
      */
     private boolean isRelop(String token)
     {
@@ -84,14 +89,14 @@ public class Parser
     }
 
     /**
-     * Consumes the current token if it equals the expected string; otherwise throws.
+     * Advances past curToken if it matches token, otherwise throws.
+     * This is the standard "eat" pattern from class.
      *
-     * @param token the token value that must match the current token
-     * @precondition the current token equals the expected token string
-     * @postcondition the matching token is consumed and the current token is the next token
-     *                from the scanner
-     * @throws IllegalArgumentException if the current token does not match
-     * @throws ScanErrorException       if the scanner cannot read the next token
+     * @param token the expected current token
+     * @precondition token != null
+     * @postcondition curToken is now the token that follows the consumed one
+     * @throws IllegalArgumentException if curToken doesn't match token
+     * @throws ScanErrorException if the scanner blows up reading the next token
      */
     private void eat(String token) throws IllegalArgumentException, ScanErrorException
     {
@@ -101,19 +106,19 @@ public class Parser
         }
         else
         {
-            String msg = "Expected token: " + token + " but got: " + curToken;
-            throw new IllegalArgumentException(msg);
+            throw new IllegalArgumentException(
+                "expected '" + token + "' but got '" + curToken + "'");
         }
     }
 
     /**
-     * Parses a number literal into a Number AST node.
+     * Parses an integer literal and wraps it in a Number node.
      *
-     * @precondition the current token is an integer literal
-     * @postcondition that literal token is consumed and the current token advances
-     * @return AST number node
-     * @throws IllegalArgumentException if the current token is not a valid integer
-     * @throws ScanErrorException if the scanner cannot advance to the next token
+     * @precondition curToken is a valid integer string
+     * @postcondition curToken advances past the number
+     * @return a Number node holding the parsed int
+     * @throws IllegalArgumentException if curToken isn't a valid integer
+     * @throws ScanErrorException if the scanner fails advancing
      */
     private Expression parseNumber() throws IllegalArgumentException, ScanErrorException
     {
@@ -123,13 +128,13 @@ public class Parser
     }
 
     /**
-     * Parses a factor: ( expr ) | - factor | id | num.
+     * Parses a factor -- one of: (expr), -factor, variable name, or number.
      *
-     * @precondition the current token begins a factor
-     * @postcondition the entire factor is consumed from the token stream
-     * @return factor expression AST
-     * @throws IllegalArgumentException if the token stream does not match a factor
-     * @throws ScanErrorException if the scanner cannot advance to the next token
+     * @precondition curToken starts a valid factor
+     * @postcondition all tokens making up the factor are consumed
+     * @return the Expression node for the factor
+     * @throws IllegalArgumentException if curToken doesn't start a valid factor
+     * @throws ScanErrorException if the scanner fails
      */
     private Expression parseFactor() throws IllegalArgumentException, ScanErrorException
     {
@@ -149,19 +154,37 @@ public class Parser
         {
             String name = curToken;
             eat(name);
+            // id '(' maybeargs ')' is a procedure call; otherwise just a variable.
+            if (curToken.equals("("))
+            {
+                eat("(");
+                List<Expression> args = new ArrayList<Expression>();
+                if (!curToken.equals(")"))
+                {
+                    args.add(parseExpr());
+                    while (curToken.equals(","))
+                    {
+                        eat(",");
+                        args.add(parseExpr());
+                    }
+                }
+                eat(")");
+                return new ProcedureCall(name, args);
+            }
             return new Variable(name);
         }
         return parseNumber();
     }
 
     /**
-     * Parses a term: factor ( (*|/|mod) factor )*.
+     * Parses a term (handles *, /, mod with left-associativity).
+     * Grammar: term -&gt; factor ( (*|/|mod) factor )*
      *
-     * @precondition the current token begins a term (a factor)
-     * @postcondition the entire term is consumed from the token stream
-     * @return term expression AST
-     * @throws IllegalArgumentException if the token stream does not match a term
-     * @throws ScanErrorException if the scanner cannot advance to the next token
+     * @precondition curToken starts a factor
+     * @postcondition all tokens in the term are consumed
+     * @return the Expression node for the term
+     * @throws IllegalArgumentException if something unexpected shows up
+     * @throws ScanErrorException if the scanner fails
      */
     private Expression parseTerm() throws IllegalArgumentException, ScanErrorException
     {
@@ -176,13 +199,14 @@ public class Parser
     }
 
     /**
-     * Parses an expression: term ( (+|-) term )*.
+     * Parses an expression (handles + and - with left-associativity).
+     * Grammar: expr -&gt; term ( (+|-) term )*
      *
-     * @precondition the current token begins an expression (a term)
-     * @postcondition the entire expression is consumed from the token stream
-     * @return expression AST
-     * @throws IllegalArgumentException if the token stream does not match an expression
-     * @throws ScanErrorException if the scanner cannot advance to the next token
+     * @precondition curToken starts a term
+     * @postcondition all tokens in the expression are consumed
+     * @return the Expression node
+     * @throws IllegalArgumentException if something unexpected shows up
+     * @throws ScanErrorException if the scanner fails
      */
     public Expression parseExpr() throws IllegalArgumentException, ScanErrorException
     {
@@ -197,13 +221,13 @@ public class Parser
     }
 
     /**
-     * Parses cond: expr relop expr.
+     * Parses a condition (two expressions separated by a relational operator).
      *
-     * @precondition the current token begins the left-hand expression
-     * @postcondition the condition (two expressions and a relop) is consumed
-     * @return condition AST
-     * @throws IllegalArgumentException if a relational operator is not found
-     * @throws ScanErrorException if the scanner cannot advance to the next token
+     * @precondition curToken starts an expression
+     * @postcondition left expr, relop, and right expr are all consumed
+     * @return a Condition node
+     * @throws IllegalArgumentException if no relop is found between the two expressions
+     * @throws ScanErrorException if the scanner fails
      */
     public Condition parseCondition() throws IllegalArgumentException, ScanErrorException
     {
@@ -219,14 +243,15 @@ public class Parser
     }
 
     /**
-     * Parses a single statement.
+     * Parses one statement and returns the corresponding AST node.
+     * Handles WRITELN, READLN, IF, WHILE, FOR, REPEAT, BREAK, CONTINUE,
+     * BEGIN/END blocks, and variable assignment.
      *
-     * @precondition the current token starts a valid statement
-     * @postcondition one complete statement and its terminating semicolon (if required) are
-     *                consumed
-     * @return statement AST
-     * @throws IllegalArgumentException if the token stream does not match a statement
-     * @throws ScanErrorException if the scanner cannot advance to the next token
+     * @precondition curToken is the first token of a valid statement
+     * @postcondition the full statement (including any trailing semicolon) is consumed
+     * @return the Statement node
+     * @throws IllegalArgumentException if curToken doesn't start any known statement
+     * @throws ScanErrorException if the scanner fails mid-parse
      */
     public Statement parseStatement() throws IllegalArgumentException, ScanErrorException
     {
@@ -340,44 +365,105 @@ public class Parser
         }
         else
         {
-            throw new IllegalArgumentException("Expected statement, got: " + curToken);
+            throw new IllegalArgumentException("unexpected token: '" + curToken + "'");
         }
         return result;
     }
 
     /**
-     * Parses a program: stmts until '.' or EOF, consumes '.' if present.
+     * Parses a single PROCEDURE declaration:
+     * PROCEDURE id ( maybeparms ) ; stmt
      *
-     * @precondition the current token is the first token of the program, or a period, or EOF
-     * @postcondition all top-level statements are parsed; a trailing period is consumed if
-     *                present
-     * @return block containing all top-level statements
+     * @precondition curToken == "PROCEDURE"
+     * @postcondition the declaration (including its body) is fully consumed
+     * @return the ProcedureDeclaration node
+     * @throws IllegalArgumentException if the declaration is malformed
+     * @throws ScanErrorException if the scanner fails
      */
-    public Block parseProgram() throws IllegalArgumentException, ScanErrorException
+    private ProcedureDeclaration parseProcedureDeclaration()
+        throws IllegalArgumentException, ScanErrorException
     {
-        List<Statement> stmts = new ArrayList<Statement>();
-        while (!curToken.equals(".") && !curToken.equals("EOF"))
+        eat("PROCEDURE");
+        if (!isId(curToken))
         {
-            stmts.add(parseStatement());
+            throw new IllegalArgumentException(
+                "PROCEDURE expects identifier, got: " + curToken);
         }
-        if (curToken.equals("."))
+        String name = curToken;
+        eat(name);
+        eat("(");
+        List<String> params = new ArrayList<String>();
+        if (!curToken.equals(")"))
         {
-            eat(".");
+            if (!isId(curToken))
+            {
+                throw new IllegalArgumentException(
+                    "parameter name expected, got: " + curToken);
+            }
+            params.add(curToken);
+            eat(curToken);
+            while (curToken.equals(","))
+            {
+                eat(",");
+                if (!isId(curToken))
+                {
+                    throw new IllegalArgumentException(
+                        "parameter name expected, got: " + curToken);
+                }
+                params.add(curToken);
+                eat(curToken);
+            }
         }
-        return new Block(stmts);
+        eat(")");
+        eat(";");
+        Statement body = parseStatement();
+        return new ProcedureDeclaration(name, params, body);
     }
 
     /**
-     * Parses and executes a program in a fresh environment.
+     * Parses the whole program. Consumes any leading PROCEDURE declarations,
+     * then a single main statement, then the terminating period (if present).
+     * Grammar: program -&gt; PROCEDURE id ( maybeparms ) ; stmt program | stmt .
      *
-     * @precondition the parser is positioned at the start of a program (first token of the source)
-     * @postcondition the program through the period or EOF is parsed and executed
-     * @throws ScanErrorException       scan errors
-     * @throws IllegalArgumentException parse/runtime errors
+     * @precondition curToken is the very first token of the source
+     * @postcondition all declarations and the main statement are consumed;
+     *                trailing '.' is consumed if present
+     * @return a Program node wrapping the declarations and the main statement
+     * @throws IllegalArgumentException if the source doesn't match the grammar
+     * @throws ScanErrorException if the scanner fails
+     */
+    public Program parseProgram() throws IllegalArgumentException, ScanErrorException
+    {
+        List<ProcedureDeclaration> procs = new ArrayList<ProcedureDeclaration>();
+        while (curToken.equals("PROCEDURE"))
+        {
+            procs.add(parseProcedureDeclaration());
+        }
+        Statement main;
+        if (!curToken.equals("EOF"))
+        {
+            main = parseStatement();
+        }
+        else
+        {
+            // No main statement -- use an empty block so exec() is a no-op.
+            main = new Block(new ArrayList<Statement>());
+        }
+        // The scanner already consumed the terminating '.' by setting EOF.
+        return new Program(procs, main);
+    }
+
+    /**
+     * Convenience method: parses the program then immediately runs it in a new environment.
+     *
+     * @precondition the parser is at the start of a valid program
+     * @postcondition the program has been fully parsed and executed
+     * @throws ScanErrorException if the scanner runs into trouble
+     * @throws IllegalArgumentException if there's a parse or runtime error
      */
     public void runProgram() throws ScanErrorException, IllegalArgumentException
     {
-        Block program = parseProgram();
+        Program program = parseProgram();
         program.exec(new Environment());
     }
 
@@ -406,7 +492,11 @@ public class Parser
                 "parser/parserTest4.txt",
                 "parser/parserTest6.txt",
                 "parser/parserTest4.5ForLoopReadln.txt",
-                "parser/parserTest6_5.txt"
+                "parser/parserTest6_5.txt",
+                "parser/parserTestProcedures.txt",
+                "parser/parserTestProcedures2.txt",
+                "parser/parserTestProcedures3.txt",
+                "parser/parserTestProcedures4.txt"
             };
         }
         for (String path : files)
