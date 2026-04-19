@@ -67,6 +67,8 @@ public class ParserTester
         "parser/parserTest4.5ForLoopReadln.txt",
         "parser/parserTest6_5.txt",
         "parser/parserTestRepeatBreakContinue.txt",
+        "parser/parserTest7.txt",
+        "parser/parserTest8.txt",
         "parser/parserTestProcedures.txt",
         "parser/parserTestProcedures2.txt",
         "parser/parserTestProcedures3.txt",

@@ -1,0 +1,34 @@
+PROCEDURE max(x, y);
+BEGIN
+   max := x;
+   IF y > x THEN max := y;
+END;
+
+PROCEDURE fact(n);
+BEGIN
+   fact := 1;
+   IF n > 0 THEN fact := n * fact(n - 1);
+END;
+
+PROCEDURE square(n);
+square := n * n;
+
+PROCEDURE sumRange(lo, hi);
+BEGIN
+   sumRange := 0;
+   WHILE lo <= hi DO
+   BEGIN
+      sumRange := sumRange + lo;
+      lo := lo + 1;
+   END;
+END;
+
+BEGIN
+   WRITELN(max(3, 5));
+   WRITELN(max(10, 2));
+   WRITELN(fact(5));
+   WRITELN(fact(0));
+   WRITELN(square(7));
+   WRITELN(sumRange(1, 10));
+END;
+.

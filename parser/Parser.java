@@ -155,7 +155,7 @@ public class Parser
         {
             String name = curToken;
             eat(name);
-            // id '(' maybeargs ')' is a procedure call; otherwise just a variable.
+            // id '(' maybeargs ')' is a procedure call, but otherwise just a variable lol
             if (curToken.equals("("))
             {
                 eat("(");
@@ -163,11 +163,11 @@ public class Parser
                 if (!curToken.equals(")"))
                 {
                     args.add(parseExpr());
-                    while (curToken.equals(","))
-                    {
-                        eat(",");
-                        args.add(parseExpr());
-                    }
+                }
+                while (!curToken.equals(")"))
+                {
+                    eat(",");
+                    args.add(parseExpr());
                 }
                 eat(")");
                 return new ProcedureCall(name, args);
@@ -497,6 +497,8 @@ public class Parser
                 "parser/parserTest4.5ForLoopReadln.txt",
                 "parser/parserTest6_5.txt",
                 "parser/parserTestRepeatBreakContinue.txt",
+                "parser/parserTest7.txt",
+                "parser/parserTest8.txt",
                 "parser/parserTestProcedures.txt",
                 "parser/parserTestProcedures2.txt",
                 "parser/parserTestProcedures3.txt",

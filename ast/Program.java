@@ -9,10 +9,13 @@ import environment.Environment;
  * BEGIN/END block). Executing a Program first registers every procedure
  * in the environment, then runs the main statement.
  *
+ * <p>Program is intentionally <em>not</em> a Statement -- it represents
+ * the entire compilation unit, not a single executable line.
+ *
  * @author Manan Gupta
  * @version 2026-04-15
  */
-public class Program extends Statement
+public class Program
 {
     private final List<ProcedureDeclaration> procedures;
     private final Statement main;
@@ -31,14 +34,14 @@ public class Program extends Statement
     }
 
     /**
-     * Registers each procedure, then runs the main statement.
+     * Registers each procedure in the environment, then runs the main
+     * statement.
      *
      * @param env the (global) environment in which to execute
      * @precondition env != null and is the global environment
      * @postcondition every declared procedure is registered in env;
      *                the main statement has fully executed
      */
-    @Override
     public void exec(Environment env)
     {
         for (ProcedureDeclaration proc : procedures)
