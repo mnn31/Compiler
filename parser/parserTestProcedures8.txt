@@ -3,13 +3,25 @@
 // Expected output: 1 0 1 0 1 (isEven for 0,1,2,3,4)
 PROCEDURE isEven(n);
 BEGIN
-   IF n = 0 THEN isEven := 1
-   ELSE isEven := isOdd(n - 1);
+   IF n = 0 THEN
+   BEGIN
+      isEven := 1;
+   END;
+   ELSE
+   BEGIN
+      isEven := isOdd(n - 1);
+   END;
 END;
 PROCEDURE isOdd(n);
 BEGIN
-   IF n = 0 THEN isOdd := 0
-   ELSE isOdd := isEven(n - 1);
+   IF n = 0 THEN
+   BEGIN
+      isOdd := 0;
+   END;
+   ELSE
+   BEGIN
+      isOdd := isEven(n - 1);
+   END;
 END;
 BEGIN
    WRITELN(isEven(0));

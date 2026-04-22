@@ -32,6 +32,9 @@ import scanner.*;
  *   <li>parserTest4.5ForLoopReadln (input=42): 84, 42..97, 98..84</li>
  *   <li>parserTest6_5 (input=5): 66, 11, 6, 0..9, 1, 3, 6</li>
  *   <li>parserTestRepeatBreakContinue: 1, 1, 2, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55</li>
+ *   <li>parserTest7 (procedures + globals): 15, 5, 3, 0..9, 10, 12</li>
+ *   <li>parserTest8 (procedure with args): 15, 5, 3, 0..9, 3, 4, 10, 3, 14</li>
+ *   <li>parserTest8_5 (env hierarchy): 7, 3, 0</li>
  *   <li>parserTestProcedures (Ex1 simple): 5</li>
  *   <li>parserTestProcedures2 (Ex2 args): 1, 2, 3, 4, 5</li>
  *   <li>parserTestProcedures3 (Ex3 scope): 5, 2</li>
@@ -69,6 +72,7 @@ public class ParserTester
         "parser/parserTestRepeatBreakContinue.txt",
         "parser/parserTest7.txt",
         "parser/parserTest8.txt",
+        "parser/parserTest8_5.txt",
         "parser/parserTestProcedures.txt",
         "parser/parserTestProcedures2.txt",
         "parser/parserTestProcedures3.txt",

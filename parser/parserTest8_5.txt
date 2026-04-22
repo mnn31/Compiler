@@ -1,0 +1,26 @@
+//Environment hierarchy test file for flat hierarchy
+// global (parent) local (procedure)
+//@author Rohan Ramkumar 
+//@version 11/03/2023
+
+PROCEDURE foo();
+BEGIN
+    x := 2;
+    y := 7;
+    ignore := bar();
+    WRITELN(y);
+END;
+PROCEDURE bar();
+BEGIN
+    x := 3;
+    y := y + 2;
+END;
+BEGIN
+    x := 1;
+    ignore := foo();
+    WRITELN(x);
+    WRITELN(y);
+END;
+
+//should output 7 then 3 then 0
+

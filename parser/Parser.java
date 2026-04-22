@@ -499,6 +499,7 @@ public class Parser
                 "parser/parserTestRepeatBreakContinue.txt",
                 "parser/parserTest7.txt",
                 "parser/parserTest8.txt",
+                "parser/parserTest8_5.txt",
                 "parser/parserTestProcedures.txt",
                 "parser/parserTestProcedures2.txt",
                 "parser/parserTestProcedures3.txt",
