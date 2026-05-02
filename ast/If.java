@@ -1,12 +1,13 @@
 package ast;
 
+import emitter.Emitter;
 import environment.Environment;
 
 /**
  * IF statement, with an optional ELSE branch. elseStmt is null when there's no ELSE.
  *
  * @author Manan Gupta
- * @version 2026-03-25
+ * @version 2026-05-02
  */
 public class If extends Statement
 {
@@ -46,6 +47,38 @@ public class If extends Statement
         else if (elseStmt != null)
         {
             elseStmt.exec(env);
+        }
+    }
+
+    /**
+     * Compiles cond so that a false outcome jumps past the THEN branch. With
+     * no ELSE the false target is the endif label; with an ELSE it is the
+     * else label, and the THEN branch jumps unconditionally past the ELSE.
+     *
+     * @param e emitter to write MIPS to
+     * @precondition e != null
+     * @postcondition either thenStmt's or elseStmt's code runs at runtime
+     */
+    @Override
+    public void compile(Emitter e)
+    {
+        int id = e.nextLabelID();
+        String endLabel = "endif" + id;
+        if (elseStmt == null)
+        {
+            cond.compile(e, endLabel);
+            thenStmt.compile(e);
+            e.emit(endLabel + ":");
+        }
+        else
+        {
+            String elseLabel = "else" + id;
+            cond.compile(e, elseLabel);
+            thenStmt.compile(e);
+            e.emit("j " + endLabel);
+            e.emit(elseLabel + ":");
+            elseStmt.compile(e);
+            e.emit(endLabel + ":");
         }
     }
 }

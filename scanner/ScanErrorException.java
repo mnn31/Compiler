@@ -6,7 +6,7 @@ package scanner;
  * character in the input stream.  The error is also thrown when the expected
  * value of the character stream does not match the actual value.
  * @author Manan Gupta
- * @version 2026-25-03
+ * @version 2026-03-25
  *
  */
 public class ScanErrorException extends Exception

@@ -1,6 +1,7 @@
 package ast;
 
 import java.util.List;
+import emitter.Emitter;
 import environment.Environment;
 
 /**
@@ -8,7 +9,7 @@ import environment.Environment;
  * Also used as the top-level container for a whole program.
  *
  * @author Manan Gupta
- * @version 2026-03-25
+ * @version 2026-05-02
  */
 public class Block extends Statement
 {
@@ -38,6 +39,22 @@ public class Block extends Statement
         for (Statement s : statements)
         {
             s.exec(env);
+        }
+    }
+
+    /**
+     * Compiles each contained statement in source order.
+     *
+     * @param e emitter to write MIPS to
+     * @precondition e != null
+     * @postcondition every nested statement has emitted its code
+     */
+    @Override
+    public void compile(Emitter e)
+    {
+        for (Statement s : statements)
+        {
+            s.compile(e);
         }
     }
 }

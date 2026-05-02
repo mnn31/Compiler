@@ -1,12 +1,13 @@
 package ast;
 
+import emitter.Emitter;
 import environment.Environment;
 
 /**
  * Binary arithmetic operation (+, -, *, /, mod) on two sub-expressions.
  *
  * @author Manan Gupta
- * @version 2026-03-25
+ * @version 2026-05-02
  */
 public class BinOp extends Expression
 {
@@ -64,5 +65,50 @@ public class BinOp extends Expression
             return ll % rr;
         }
         throw new IllegalStateException("how did we get here? unknown op: " + op);
+    }
+
+    /**
+     * Compiles left, pushes its $v0 onto the stack, compiles right, pops the
+     * stored left into $t0, then applies op leaving the result in $v0. For
+     * "/" and "mod" the result word is taken from LO (mflo).
+     *
+     * @param e emitter to write MIPS to
+     * @precondition e != null; op is one of +, -, *, /, mod
+     * @postcondition $v0 holds left op right; the stack pointer is unchanged
+     */
+    @Override
+    public void compile(Emitter e)
+    {
+        left.compile(e);
+        e.emitPush("$v0");
+        right.compile(e);
+        e.emitPop("$t0");
+        if (op.equals("+"))
+        {
+            e.emit("addu $v0 $t0 $v0");
+        }
+        else if (op.equals("-"))
+        {
+            e.emit("subu $v0 $t0 $v0");
+        }
+        else if (op.equals("*"))
+        {
+            e.emit("mult $t0 $v0");
+            e.emit("mflo $v0");
+        }
+        else if (op.equals("/"))
+        {
+            e.emit("div $t0 $v0");
+            e.emit("mflo $v0");
+        }
+        else if (op.equals("mod"))
+        {
+            e.emit("div $t0 $v0");
+            e.emit("mfhi $v0");
+        }
+        else
+        {
+            throw new IllegalStateException("unknown op for compile: " + op);
+        }
     }
 }

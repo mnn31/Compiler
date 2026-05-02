@@ -16,7 +16,7 @@ import scanner.ScanErrorException;
  * Actual execution happens later when exec/eval is called on the tree.
  *
  * @author Manan Gupta
- * @version 2026-25-03
+ * @version 2026-05-02
  */
 public class Parser
 {
@@ -53,7 +53,7 @@ public class Parser
             || token.equals("ELSE") || token.equals("WHILE") || token.equals("DO")
             || token.equals("FOR") || token.equals("TO") || token.equals("READLN")
             || token.equals("REPEAT") || token.equals("UNTIL") || token.equals("BREAK")
-            || token.equals("CONTINUE") || token.equals("PROCEDURE");
+            || token.equals("CONTINUE") || token.equals("PROCEDURE") || token.equals("VAR");
     }
 
     /**
@@ -422,9 +422,44 @@ public class Parser
     }
 
     /**
-     * Parses the whole program. Consumes any leading PROCEDURE declarations,
-     * then a single main statement, then the terminating period (if present).
-     * Grammar: program -&gt; PROCEDURE id ( maybeparms ) ; stmt program | stmt .
+     * Parses one VAR line: VAR id (, id)* ; and appends each name to vars.
+     *
+     * @param vars list to append the declared identifiers to
+     * @precondition curToken == "VAR"
+     * @postcondition the VAR line and its trailing semicolon are fully consumed
+     * @throws IllegalArgumentException if a non-identifier appears in the list
+     * @throws ScanErrorException if the scanner fails
+     */
+    private void parseVarDeclaration(List<String> vars)
+        throws IllegalArgumentException, ScanErrorException
+    {
+        eat("VAR");
+        if (!isId(curToken))
+        {
+            throw new IllegalArgumentException(
+                "VAR expects identifier, got: " + curToken);
+        }
+        vars.add(curToken);
+        eat(curToken);
+        while (curToken.equals(","))
+        {
+            eat(",");
+            if (!isId(curToken))
+            {
+                throw new IllegalArgumentException(
+                    "VAR expects identifier, got: " + curToken);
+            }
+            vars.add(curToken);
+            eat(curToken);
+        }
+        eat(";");
+    }
+
+    /**
+     * Parses the whole program. Consumes any leading VAR declarations and
+     * PROCEDURE declarations, then a single main statement, then the
+     * terminating period (if present).
+     * Grammar: program -&gt; (VAR id (, id)* ;)* (PROCEDURE id ( maybeparms ) ; stmt)* stmt .
      *
      * @precondition curToken is the very first token of the source
      * @postcondition all declarations and the main statement are consumed;
@@ -435,6 +470,11 @@ public class Parser
      */
     public Program parseProgram() throws IllegalArgumentException, ScanErrorException
     {
+        List<String> vars = new ArrayList<String>();
+        while (curToken.equals("VAR"))
+        {
+            parseVarDeclaration(vars);
+        }
         List<ProcedureDeclaration> procs = new ArrayList<ProcedureDeclaration>();
         while (curToken.equals("PROCEDURE"))
         {
@@ -451,7 +491,7 @@ public class Parser
             main = new Block(new ArrayList<Statement>());
         }
         // The scanner already consumed the terminating '.' by setting EOF.
-        return new Program(procs, main);
+        return new Program(vars, procs, main);
     }
 
     /**

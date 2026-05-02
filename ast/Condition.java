@@ -1,13 +1,14 @@
 package ast;
 
+import emitter.Emitter;
 import environment.Environment;
 
 /**
- * Represents a boolean condition like "x > 5" or "a <> b".
+ * Represents a boolean condition like "x > 5" or "a &lt;&gt; b".
  * Used by IF, WHILE, and REPEAT-UNTIL. Supports all 6 relational operators.
  *
  * @author Manan Gupta
- * @version 2026-03-25
+ * @version 2026-05-02
  */
 public class Condition
 {
@@ -71,5 +72,54 @@ public class Condition
             throw new IllegalStateException("unrecognized relop '" + relop + "' -- parser bug?");
         }
         return result;
+    }
+
+    /**
+     * Emits code that branches to targetLabel when the condition is FALSE.
+     * The straight-line fallthrough therefore corresponds to the condition
+     * being true, which is what IF/WHILE/REPEAT need. Left lands in $t0 and
+     * right in $v0 before the branch.
+     *
+     * @param e emitter to write MIPS to
+     * @param targetLabel label to branch to when this condition is false
+     * @precondition e != null, targetLabel != null; relop is one of the six valid ones
+     * @postcondition a branch instruction has been emitted; $t0 and $v0 are clobbered
+     */
+    public void compile(Emitter e, String targetLabel)
+    {
+        left.compile(e);
+        e.emitPush("$v0");
+        right.compile(e);
+        e.emitPop("$t0");
+        String branch;
+        if (relop.equals("="))
+        {
+            branch = "bne";
+        }
+        else if (relop.equals("<>"))
+        {
+            branch = "beq";
+        }
+        else if (relop.equals("<"))
+        {
+            branch = "bge";
+        }
+        else if (relop.equals(">"))
+        {
+            branch = "ble";
+        }
+        else if (relop.equals("<="))
+        {
+            branch = "bgt";
+        }
+        else if (relop.equals(">="))
+        {
+            branch = "blt";
+        }
+        else
+        {
+            throw new IllegalStateException("unrecognized relop '" + relop + "' -- parser bug?");
+        }
+        e.emit(branch + " $t0 $v0 " + targetLabel);
     }
 }

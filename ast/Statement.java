@@ -1,5 +1,6 @@
 package ast;
 
+import emitter.Emitter;
 import environment.Environment;
 
 /**
@@ -7,7 +8,7 @@ import environment.Environment;
  * execute itself given an environment.
  *
  * @author Manan Gupta
- * @version 2026-03-25
+ * @version 2026-05-02
  */
 public abstract class Statement
 {
@@ -18,4 +19,17 @@ public abstract class Statement
      * @precondition env != null
      */
     public abstract void exec(Environment env);
+
+    /**
+     * Default compile method, overridden by every concrete statement. The
+     * default throws so a missing override surfaces as a clear runtime error.
+     *
+     * @param e emitter to write MIPS to
+     * @precondition e != null
+     * @postcondition MIPS instructions for this statement have been emitted
+     */
+    public void compile(Emitter e)
+    {
+        throw new RuntimeException("Implement me!!!!!");
+    }
 }

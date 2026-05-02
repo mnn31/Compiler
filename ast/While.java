@@ -1,5 +1,6 @@
 package ast;
 
+import emitter.Emitter;
 import environment.Environment;
 
 /**
@@ -7,7 +8,7 @@ import environment.Environment;
  * BREAK exits immediately, CONTINUE skips to the next check.
  *
  * @author Manan Gupta
- * @version 2026-03-25
+ * @version 2026-05-02
  */
 public class While extends Statement
 {
@@ -52,5 +53,27 @@ public class While extends Statement
                 break;
             }
         }
+    }
+
+    /**
+     * Compiles the loop with a top label that re-checks cond and a bottom
+     * label that the false branch jumps to. The body unconditionally jumps
+     * back to the top label after each iteration.
+     *
+     * @param e emitter to write MIPS to
+     * @precondition e != null
+     * @postcondition the body runs zero or more times until cond is false
+     */
+    @Override
+    public void compile(Emitter e)
+    {
+        int id = e.nextLabelID();
+        String topLabel = "while" + id;
+        String endLabel = "endwhile" + id;
+        e.emit(topLabel + ":");
+        cond.compile(e, endLabel);
+        body.compile(e);
+        e.emit("j " + topLabel);
+        e.emit(endLabel + ":");
     }
 }

@@ -1,5 +1,6 @@
 package ast;
 
+import emitter.Emitter;
 import environment.Environment;
 
 /**
@@ -7,7 +8,7 @@ import environment.Environment;
  * and stores the result in the environment under the given variable name.
  *
  * @author Manan Gupta
- * @version 2026-03-25
+ * @version 2026-05-02
  */
 public class Assignment extends Statement
 {
@@ -39,5 +40,20 @@ public class Assignment extends Statement
     public void exec(Environment env)
     {
         env.setVariable(var, exp.eval(env));
+    }
+
+    /**
+     * Compiles exp into $v0, then stores $v0 to the variable's address in .data.
+     *
+     * @param e emitter to write MIPS to
+     * @precondition e != null; var was emitted in the .data section
+     * @postcondition the variable now holds the value of exp at runtime
+     */
+    @Override
+    public void compile(Emitter e)
+    {
+        exp.compile(e);
+        e.emit("la $t0 var" + var);
+        e.emit("sw $v0 ($t0)\t# store $v0 into var" + var);
     }
 }
