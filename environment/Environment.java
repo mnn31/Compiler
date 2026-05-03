@@ -111,7 +111,7 @@ public class Environment
             return;
         }
         Environment global = getGlobal();
-        if (global != this && global.variables.containsKey(variable))
+        if (global != null && global.variables.containsKey(variable))
         {
             global.variables.put(variable, value);
         }
