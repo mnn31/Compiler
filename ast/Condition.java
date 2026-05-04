@@ -4,7 +4,7 @@ import emitter.Emitter;
 import environment.Environment;
 
 /**
- * Represents a boolean condition like "x > 5" or "a &lt;&gt; b".
+ * Represents a boolean condition like "x greater than 5" or "a not equal to b".
  * Used by IF, WHILE, and REPEAT-UNTIL. Supports all 6 relational operators.
  *
  * @author Manan Gupta

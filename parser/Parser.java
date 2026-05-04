@@ -12,7 +12,7 @@ import scanner.ScanErrorException;
  * Handles expressions, assignments, WRITELN/READLN, BEGIN/END blocks, IF/ELSE,
  * WHILE, FOR, REPEAT/UNTIL, BREAK, and CONTINUE.
  *
- * <p>Each parseXXX method consumes tokens and returns the corresponding AST node.
+ * Each parseXXX method consumes tokens and returns the corresponding AST node.
  * Actual execution happens later when exec/eval is called on the tree.
  *
  * @author Manan Gupta
@@ -78,7 +78,7 @@ public class Parser
      * Checks if token is one of the six relational operators.
      *
      * @param token token to check
-     * @return true if token is =, &lt;&gt;, &lt;, &gt;, &lt;=, or &gt;=
+     * @return true if token is one of the six relational operators
      * @precondition token != null
      * @postcondition no side effects
      */
@@ -179,7 +179,7 @@ public class Parser
 
     /**
      * Parses a term (handles *, /, mod with left-associativity).
-     * Grammar: term -&gt; factor ( (*|/|mod) factor )*
+     * Grammar: term -> factor ( (*|/|mod) factor )*
      *
      * @precondition curToken starts a factor
      * @postcondition all tokens in the term are consumed
@@ -201,7 +201,7 @@ public class Parser
 
     /**
      * Parses an expression (handles + and - with left-associativity).
-     * Grammar: expr -&gt; term ( (+|-) term )*
+     * Grammar: expr -> term ( (+|-) term )*
      *
      * @precondition curToken starts a term
      * @postcondition all tokens in the expression are consumed
@@ -459,7 +459,7 @@ public class Parser
      * Parses the whole program. Consumes any leading VAR declarations and
      * PROCEDURE declarations, then a single main statement, then the
      * terminating period (if present).
-     * Grammar: program -&gt; (VAR id (, id)* ;)* (PROCEDURE id ( maybeparms ) ; stmt)* stmt .
+     * Grammar: program -> (VAR id (, id)* ;)* (PROCEDURE id ( maybeparms ) ; stmt)* stmt .
      *
      * @precondition curToken is the very first token of the source
      * @postcondition all declarations and the main statement are consumed;
@@ -560,11 +560,11 @@ public class Parser
                 scanner.Scanner scan = new scanner.Scanner(in);
                 Parser p = new Parser(scan);
                 p.runProgram();
-                System.out.println("Parser completed successfully.");
+                System.out.println("Parser completed successfully!");
             }
             catch (java.io.FileNotFoundException e)
             {
-                System.err.println("File not found: " + path);
+                System.err.println("woops. File not found: " + path);
             }
             catch (Exception e)
             {
@@ -573,7 +573,7 @@ public class Parser
                 {
                     msg = e.getClass().getName();
                 }
-                System.err.println("Error: " + msg);
+                System.err.println("woops. Error: " + msg);
             }
         }
     }

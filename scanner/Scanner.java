@@ -351,7 +351,7 @@ public class Scanner
         {
             if (s.equals("") && !isLetter(currentChar))
             {
-                throw new ScanErrorException("wrong type");
+                throw new ScanErrorException("identifier must start with a letter!!");
             }
             s += currentChar;
             eat(currentChar);
@@ -404,7 +404,7 @@ public class Scanner
         }
         else
         {
-            throw new ScanErrorException("wrong type");
+            throw new ScanErrorException("not a valid operator character!!");
         }
         return s;
     }

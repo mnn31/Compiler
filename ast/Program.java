@@ -11,8 +11,8 @@ import environment.Environment;
  * declares each global variable to 0, registers every procedure, and then
  * runs the main statement.
  *
- * <p>Program is intentionally <em>not</em> a Statement -- it represents
- * the entire compilation unit, not a single executable line.
+ * Program is intentionally not a Statement -- it represents the entire
+ * compilation unit, not a single executable line.
  *
  * @author Manan Gupta
  * @version 2026-05-02

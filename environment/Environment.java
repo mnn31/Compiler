@@ -10,10 +10,9 @@ import ast.ProcedureDeclaration;
  * has a null parent, and each procedure call creates a child environment whose
  * parent is the global environment.
  *
- * <p>Procedures always live in the global (root) environment, so
- * {@link #getProcedure(String)} and {@link #setProcedure(String, ProcedureDeclaration)}
- * always walk up to the root. Variables have more nuanced scoping rules --
- * see the individual method docs Ms Datar!!
+ * Procedures always live in the global (root) environment, so getProcedure
+ * and setProcedure always walk up to the root. Variables have more nuanced
+ * scoping rules -- see the individual method docs Ms Datar!!
  *
  * @author Manan Gupta
  * @version 2026-04-15
@@ -78,14 +77,14 @@ public class Environment
     }
 
     /**
-     * Declares a variable with the given value <em>in this environment</em>.
+     * Declares a variable with the given value in this environment specifically.
      * Unlike setVariable, this never walks up to the parent -- it is how new
      * local bindings (e.g. procedure parameters) are introduced.
      *
      * @param variable name of the variable to declare locally
      * @param value the value to bind
      * @precondition variable != null
-     * @postcondition this.variables contains variable -&gt; value
+     * @postcondition this.variables contains variable -> value
      */
     public void declareVariable(String variable, int value)
     {
@@ -155,7 +154,7 @@ public class Environment
      * @param name procedure name
      * @param proc the declaration to associate with name
      * @precondition name != null and proc != null
-     * @postcondition the global environment's procedure table maps name -&gt; proc
+     * @postcondition the global environment's procedure table maps name -> proc
      */
     public void setProcedure(String name, ProcedureDeclaration proc)
     {

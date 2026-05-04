@@ -8,9 +8,9 @@ import scanner.ScanErrorException;
  * Test driver that parses a Pascal source file and uses the AST's compile
  * method to emit a runnable MIPS .asm file.
  *
- * <p>Usage: java parser.CompilerTester input.txt output.asm
+ * Usage: java parser.CompilerTester input.txt output.asm
  *
- * <p>With no args, the default suite compiles parserTest9.txt and max.txt.
+ * With no args, the default suite compiles parserTest9.txt and max.txt.
  *
  * @author Manan Gupta
  * @version 2026-05-02
@@ -73,15 +73,15 @@ public class CompilerTester
             try
             {
                 compile(src, dst);
-                System.out.println("compiled successfully.");
+                System.out.println("compiled successfully!");
             }
             catch (ScanErrorException e)
             {
-                System.err.println("scan error: " + e.getMessage());
+                System.err.println("woops. Scan error: " + e.getMessage());
             }
             catch (IllegalArgumentException e)
             {
-                System.err.println("parse error: " + e.getMessage());
+                System.err.println("woops. Parse error: " + e.getMessage());
             }
             catch (Exception e)
             {
@@ -90,7 +90,7 @@ public class CompilerTester
                 {
                     msg = e.getClass().getName();
                 }
-                System.err.println("error: " + msg);
+                System.err.println("woops. Error: " + msg);
             }
         }
     }

@@ -8,11 +8,8 @@ import java.io.*;
  * 
  * @author Manan Gupta
  * @version 2026-03-25
- * 
- * Usage:
- * <pre>
- *     java scanner.ScannerTester
- * </pre>
+ *
+ * Usage: java scanner.ScannerTester
  */
 public class ScannerTester
 {

@@ -14,37 +14,35 @@ import scanner.*;
  * and executed in a fresh Environment. Programs are statement lists terminated by a period
  * or EOF.
  *
- * <p>The default suite covers all parser test files: parserTest0 through parserTest6_5,
+ * The default suite covers all parser test files: parserTest0 through parserTest6_5,
  * plus the mod, repeat/break/continue, and IF/ELSE tests. Tests that use READLN get
  * scripted standard input from prepareStdinForPath so the full default run works without
  * manual piping.
  *
- * <p>Expected outputs per file:
- * <ul>
- *   <li>parserTest0: 3</li>
- *   <li>parserTest1: 4, 9, 1</li>
- *   <li>parserTest2: 14, 10, 20</li>
- *   <li>parserTest3: 1, 2, 3</li>
- *   <li>parserTest4: 15</li>
- *   <li>parserTest5: 10, 10, 7</li>
- *   <li>parserTest6: 15, 5, 3, 0..9</li>
- *   <li>parserTestMod: 1</li>
- *   <li>parserTest4.5ForLoopReadln (input=42): 84, 42..97, 98..84</li>
- *   <li>parserTest6_5 (input=5): 66, 11, 6, 0..9, 1, 3, 6</li>
- *   <li>parserTestRepeatBreakContinue: 1, 1, 2, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55</li>
- *   <li>parserTest7 (procedures + globals): 15, 5, 3, 0..9, 10, 12</li>
- *   <li>parserTest8 (procedure with args): 15, 5, 3, 0..9, 3, 4, 10, 3, 14</li>
- *   <li>parserTest8_5 (env hierarchy): 7, 3, 0</li>
- *   <li>parserTestProcedures (Ex1 simple): 5</li>
- *   <li>parserTestProcedures2 (Ex2 args): 1, 2, 3, 4, 5</li>
- *   <li>parserTestProcedures3 (Ex3 scope): 5, 2</li>
- *   <li>parserTestProcedures4 (Ex4 return): 5, 10</li>
- *   <li>parserTestProcedures5 (scope no clobber): 5, 3</li>
- *   <li>parserTestProcedures6 (factorial): 120, 1, 720</li>
- *   <li>parserTestProcedures7 (loops + procs): 1, 4, 9, 16, 25, 55</li>
- *   <li>parserTestProcedures8 (mutual recursion): 1, 0, 1, 0, 1</li>
- *   <li>parserTestProcedures9 (zero procs regression): 10, 20, 30</li>
- * </ul>
+ * Expected outputs per file:
+ *   parserTest0: 3
+ *   parserTest1: 4, 9, 1
+ *   parserTest2: 14, 10, 20
+ *   parserTest3: 1, 2, 3
+ *   parserTest4: 15
+ *   parserTest5: 10, 10, 7
+ *   parserTest6: 15, 5, 3, 0..9
+ *   parserTestMod: 1
+ *   parserTest4.5ForLoopReadln (input=42): 84, 42..97, 98..84
+ *   parserTest6_5 (input=5): 66, 11, 6, 0..9, 1, 3, 6
+ *   parserTestRepeatBreakContinue: 1, 1, 2, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55
+ *   parserTest7 (procedures + globals): 15, 5, 3, 0..9, 10, 12
+ *   parserTest8 (procedure with args): 15, 5, 3, 0..9, 3, 4, 10, 3, 14
+ *   parserTest8_5 (env hierarchy): 7, 3, 0
+ *   parserTestProcedures (Ex1 simple): 5
+ *   parserTestProcedures2 (Ex2 args): 1, 2, 3, 4, 5
+ *   parserTestProcedures3 (Ex3 scope): 5, 2
+ *   parserTestProcedures4 (Ex4 return): 5, 10
+ *   parserTestProcedures5 (scope no clobber): 5, 3
+ *   parserTestProcedures6 (factorial): 120, 1, 720
+ *   parserTestProcedures7 (loops + procs): 1, 4, 9, 16, 25, 55
+ *   parserTestProcedures8 (mutual recursion): 1, 0, 1, 0, 1
+ *   parserTestProcedures9 (zero procs regression): 10, 20, 30
  *
  * @author Manan Gupta
  * @version 2026-03-25
