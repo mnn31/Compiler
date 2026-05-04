@@ -43,6 +43,7 @@ import scanner.*;
  *   parserTestProcedures7 (loops + procs): 1, 4, 9, 16, 25, 55
  *   parserTestProcedures8 (mutual recursion): 1, 0, 1, 0, 1
  *   parserTestProcedures9 (zero procs regression): 10, 20, 30
+ *   parserTest9_5 (input=5): 80, 10, 8, 0, 2, 4, 6, 1, 3, 6, 10, 15, 5
  *
  * @author Manan Gupta
  * @version 2026-03-25
@@ -79,7 +80,8 @@ public class ParserTester
         "parser/parserTestProcedures6.txt",
         "parser/parserTestProcedures7.txt",
         "parser/parserTestProcedures8.txt",
-        "parser/parserTestProcedures9.txt"
+        "parser/parserTestProcedures9.txt",
+        "parser/parserTest9_5.txt"
     };
 
     /**
@@ -98,6 +100,11 @@ public class ParserTester
                 "42\n".getBytes(StandardCharsets.UTF_8)));
         }
         else if (path.contains("parserTest6_5"))
+        {
+            System.setIn(new ByteArrayInputStream(
+                "5\n".getBytes(StandardCharsets.UTF_8)));
+        }
+        else if (path.contains("parserTest9_5"))
         {
             System.setIn(new ByteArrayInputStream(
                 "5\n".getBytes(StandardCharsets.UTF_8)));

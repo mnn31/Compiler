@@ -283,8 +283,20 @@ public class Parser
         else if (curToken.equals("IF"))
         {
             eat("IF");
+            boolean hadParen = curToken.equals("(");
+            if (hadParen)
+            {
+                eat("(");
+            }
             Condition c = parseCondition();
-            eat("THEN");
+            if (hadParen)
+            {
+                eat(")");
+            }
+            if (curToken.equals("THEN"))
+            {
+                eat("THEN");
+            }
             Statement thenStmt = parseStatement();
             if (curToken.equals("ELSE"))
             {

@@ -1,7 +1,7 @@
 package parser;
 
-import java.io.FileInputStream;
 import ast.Program;
+import java.io.FileInputStream;
 import scanner.ScanErrorException;
 
 /**
@@ -23,7 +23,8 @@ public class CompilerTester
      */
     private static final String[][] DEFAULT_PAIRS = {
         {"parser/parserTest9.txt", "parser/parserTest9.asm"},
-        {"parser/max.txt", "parser/max.asm"}
+        {"parser/max.txt", "parser/max.asm"},
+        {"parser/parserTest9_5.txt", "parser/parserTest9_5.asm"}
     };
 
     /**

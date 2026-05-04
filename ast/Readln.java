@@ -1,6 +1,7 @@
 package ast;
 
 import java.util.Scanner;
+import emitter.Emitter;
 import environment.Environment;
 
 /**
@@ -54,5 +55,22 @@ public class Readln extends Statement
             stdinScanner = new Scanner(System.in);
         }
         env.setVariable(var, stdinScanner.nextInt());
+    }
+
+    /**
+     * Compiles to MIPS syscall 5 (read int) and stores the resulting $v0 into
+     * var's slot in the .data section.
+     *
+     * @param e emitter to write MIPS to
+     * @precondition e != null; var was emitted in the .data section
+     * @postcondition var holds the integer typed by the user at runtime
+     */
+    @Override
+    public void compile(Emitter e)
+    {
+        e.emit("li $v0 5\t# READLN -- read int syscall");
+        e.emit("syscall");
+        e.emit("la $t0 var" + var);
+        e.emit("sw $v0 ($t0)\t# store input into var" + var);
     }
 }

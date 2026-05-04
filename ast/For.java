@@ -1,5 +1,6 @@
 package ast;
 
+import emitter.Emitter;
 import environment.Environment;
 
 /**
@@ -61,5 +62,40 @@ public class For extends Statement
                 break;
             }
         }
+    }
+
+    /**
+     * Compiles the FOR loop to MIPS. Initializes var to start, then at the top
+     * of the loop it pushes the current var value, evaluates end into $v0,
+     * pops the saved var into $t0, and branches out if $t0 > $v0. After the
+     * body it increments var and jumps back to the top label.
+     *
+     * @param e emitter to write MIPS to
+     * @precondition e != null; var was emitted in the .data section
+     * @postcondition body runs once for every value of var from start to end
+     */
+    @Override
+    public void compile(Emitter e)
+    {
+        int id = e.nextLabelID();
+        String topLabel = "for" + id;
+        String endLabel = "endfor" + id;
+        start.compile(e);
+        e.emit("la $t0 var" + var);
+        e.emit("sw $v0 ($t0)\t# init " + var + " for FOR loop");
+        e.emit(topLabel + ":");
+        e.emit("la $t0 var" + var);
+        e.emit("lw $v0 ($t0)");
+        e.emitPush("$v0");
+        end.compile(e);
+        e.emitPop("$t0");
+        e.emit("bgt $t0 $v0 " + endLabel);
+        body.compile(e);
+        e.emit("la $t0 var" + var);
+        e.emit("lw $v0 ($t0)");
+        e.emit("addu $v0 $v0 1\t# bump " + var);
+        e.emit("sw $v0 ($t0)");
+        e.emit("j " + topLabel);
+        e.emit(endLabel + ":");
     }
 }
