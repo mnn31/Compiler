@@ -24,7 +24,8 @@ public class CompilerTester
     private static final String[][] DEFAULT_PAIRS = {
         {"parser/parserTest9.txt", "parser/parserTest9.asm"},
         {"parser/max.txt", "parser/max.asm"},
-        {"parser/parserTest9_5.txt", "parser/parserTest9_5.asm"}
+        {"parser/parserTest9_5.txt", "parser/parserTest9_5.asm"},
+        {"parser/parserTest4_5ForLoopReadln.txt", "parser/parserTest4_5ForLoopReadln.asm"}
     };
 
     /**
